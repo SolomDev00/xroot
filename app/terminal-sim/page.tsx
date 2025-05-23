@@ -1,20 +1,26 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
-import { ArrowLeft, Terminal, Play, RotateCcw } from "lucide-react"
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { ArrowLeft, Terminal, Play, RotateCcw } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { TerminalCube } from "@/components/terminal-cube"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { TerminalCube } from "@/components/terminal-cube";
 
 interface TerminalLine {
-  type: "command" | "output" | "error" | "system"
-  content: string
-  timestamp?: Date
+  type: "command" | "output" | "error" | "system";
+  content: string;
+  timestamp?: Date;
 }
 
 const commands = {
@@ -187,134 +193,147 @@ const commands = {
       "5. Regular security training for users",
     ],
   },
-}
+};
 
 export default function TerminalSimPage() {
   const [lines, setLines] = useState<TerminalLine[]>([
     { type: "system", content: "CyberSec Terminal Simulator v1.0" },
     { type: "system", content: "Type 'help' for available commands" },
     { type: "system", content: "" },
-  ])
-  const [currentInput, setCurrentInput] = useState("")
-  const [commandHistory, setCommandHistory] = useState<string[]>([])
-  const [historyIndex, setHistoryIndex] = useState(-1)
-  const [showCube, setShowCube] = useState(false)
-  const terminalRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  ]);
+  const [currentInput, setCurrentInput] = useState("");
+  const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [showCube, setShowCube] = useState(false);
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
-  }, [lines])
+  }, [lines]);
 
   useEffect(() => {
     if (inputRef.current) {
-      inputRef.current.focus()
+      inputRef.current.focus();
     }
-  }, [])
+  }, []);
 
   const addLine = (type: TerminalLine["type"], content: string) => {
-    setLines((prev) => [...prev, { type, content, timestamp: new Date() }])
-  }
+    setLines((prev) => [...prev, { type, content, timestamp: new Date() }]);
+  };
 
   const executeCommand = (command: string) => {
-    const trimmedCommand = command.trim().toLowerCase()
+    const trimmedCommand = command.trim().toLowerCase();
 
-    addLine("command", `$ ${command}`)
+    addLine("command", `$ ${command}`);
 
     if (trimmedCommand === "") {
-      return
+      return;
     }
 
     if (trimmedCommand === "clear") {
-      setLines([])
-      return
+      setLines([]);
+      return;
     }
 
     if (trimmedCommand === "exit") {
-      addLine("system", "Terminal session ended.")
-      return
+      addLine("system", "Terminal session ended.");
+      return;
     }
 
     if (trimmedCommand === "cube") {
-      setShowCube(true)
-      addLine("output", "Displaying 3D Security Cube...")
-      addLine("output", "The cube represents the multi-layered approach to cybersecurity:")
-      addLine("output", "- Physical Security (Red face)")
-      addLine("output", "- Network Security (Green face)")
-      addLine("output", "- Application Security (Blue face)")
-      addLine("output", "- Data Security (Yellow face)")
-      addLine("output", "- Identity Security (Magenta face)")
-      addLine("output", "- Operational Security (Cyan face)")
-      return
+      setShowCube(true);
+      addLine("output", "Displaying 3D Security Cube...");
+      addLine(
+        "output",
+        "The cube represents the multi-layered approach to cybersecurity:"
+      );
+      addLine("output", "- Physical Security (Red face)");
+      addLine("output", "- Network Security (Green face)");
+      addLine("output", "- Application Security (Blue face)");
+      addLine("output", "- Data Security (Yellow face)");
+      addLine("output", "- Identity Security (Magenta face)");
+      addLine("output", "- Operational Security (Cyan face)");
+      return;
     }
 
     // Check if command exists
-    const cmd = commands[trimmedCommand as keyof typeof commands]
+    const cmd = commands[trimmedCommand as keyof typeof commands];
     if (cmd) {
       cmd.output.forEach((line) => {
-        setTimeout(() => addLine("output", line), Math.random() * 100)
-      })
+        setTimeout(() => addLine("output", line), Math.random() * 100);
+      });
     } else {
-      addLine("error", `Command not found: ${trimmedCommand}`)
-      addLine("output", "Type 'help' for available commands")
+      addLine("error", `Command not found: ${trimmedCommand}`);
+      addLine("output", "Type 'help' for available commands");
     }
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (currentInput.trim()) {
-      setCommandHistory((prev) => [...prev, currentInput])
-      executeCommand(currentInput)
-      setCurrentInput("")
-      setHistoryIndex(-1)
+      setCommandHistory((prev) => [...prev, currentInput]);
+      executeCommand(currentInput);
+      setCurrentInput("");
+      setHistoryIndex(-1);
     }
-  }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowUp") {
-      e.preventDefault()
+      e.preventDefault();
       if (commandHistory.length > 0) {
-        const newIndex = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1)
-        setHistoryIndex(newIndex)
-        setCurrentInput(commandHistory[newIndex])
+        const newIndex =
+          historyIndex === -1
+            ? commandHistory.length - 1
+            : Math.max(0, historyIndex - 1);
+        setHistoryIndex(newIndex);
+        setCurrentInput(commandHistory[newIndex]);
       }
     } else if (e.key === "ArrowDown") {
-      e.preventDefault()
+      e.preventDefault();
       if (historyIndex !== -1) {
-        const newIndex = historyIndex + 1
+        const newIndex = historyIndex + 1;
         if (newIndex >= commandHistory.length) {
-          setHistoryIndex(-1)
-          setCurrentInput("")
+          setHistoryIndex(-1);
+          setCurrentInput("");
         } else {
-          setHistoryIndex(newIndex)
-          setCurrentInput(commandHistory[newIndex])
+          setHistoryIndex(newIndex);
+          setCurrentInput(commandHistory[newIndex]);
         }
       }
     }
-  }
+  };
 
   const clearTerminal = () => {
     setLines([
       { type: "system", content: "CyberSec Terminal Simulator v1.0" },
       { type: "system", content: "Type 'help' for available commands" },
       { type: "system", content: "" },
-    ])
-    setShowCube(false)
-  }
+    ]);
+    setShowCube(false);
+  };
 
   const runDemo = () => {
-    const demoCommands = ["whoami", "pwd", "ls", "cat system_info.txt", "nmap", "security"]
-    let delay = 0
+    const demoCommands = [
+      "whoami",
+      "pwd",
+      "ls",
+      "cat system_info.txt",
+      "nmap",
+      "security",
+    ];
+    let delay = 0;
 
     demoCommands.forEach((cmd, index) => {
       setTimeout(() => {
-        executeCommand(cmd)
-      }, delay)
-      delay += 2000
-    })
-  }
+        executeCommand(cmd);
+      }, delay);
+      delay += 2000;
+    });
+  };
 
   return (
     <div className="container py-8">
@@ -345,7 +364,9 @@ export default function TerminalSimPage() {
                 <Terminal className="h-5 w-5" />
                 CyberSec Terminal
               </CardTitle>
-              <CardDescription>Interactive terminal for cybersecurity tools and commands</CardDescription>
+              <CardDescription>
+                Interactive terminal for cybersecurity tools and commands
+              </CardDescription>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col p-0">
               <div
@@ -360,10 +381,10 @@ export default function TerminalSimPage() {
                       line.type === "command"
                         ? "text-white"
                         : line.type === "error"
-                          ? "text-red-400"
-                          : line.type === "system"
-                            ? "text-yellow-400"
-                            : "text-green-400"
+                        ? "text-red-400"
+                        : line.type === "system"
+                        ? "text-yellow-400"
+                        : "text-green-400"
                     }`}
                   >
                     {line.content}
@@ -376,9 +397,12 @@ export default function TerminalSimPage() {
                     value={currentInput}
                     onChange={(e) => setCurrentInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="bg-transparent border-none text-green-400 font-mono focus:ring-0 focus:outline-none p-0"
+                    className="bg-transparent border-none! text-green-400 font-mono focus-visible:ring-0 focus-visible:border-none focus-visible:outline-none focus:ring-0 focus:outline-none p-0"
                     placeholder="Type a command..."
                     autoComplete="off"
+                    style={{
+                      borderColor: "transparent",
+                    }}
                   />
                 </form>
               </div>
@@ -391,7 +415,9 @@ export default function TerminalSimPage() {
             <Card>
               <CardHeader>
                 <CardTitle>3D Security Cube</CardTitle>
-                <CardDescription>Multi-layered cybersecurity visualization</CardDescription>
+                <CardDescription>
+                  Multi-layered cybersecurity visualization
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-64 w-full">
@@ -404,7 +430,9 @@ export default function TerminalSimPage() {
           <Card>
             <CardHeader>
               <CardTitle>Available Commands</CardTitle>
-              <CardDescription>Common cybersecurity tools and utilities</CardDescription>
+              <CardDescription>
+                Common cybersecurity tools and utilities
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-2 text-sm">
@@ -420,7 +448,9 @@ export default function TerminalSimPage() {
                   <code className="bg-muted px-2 py-1 rounded">wireshark</code>
                   <code className="bg-muted px-2 py-1 rounded">security</code>
                   <code className="bg-muted px-2 py-1 rounded">cube</code>
-                  <code className="bg-muted px-2 py-1 rounded">cat &lt;file&gt;</code>
+                  <code className="bg-muted px-2 py-1 rounded">
+                    cat &lt;file&gt;
+                  </code>
                 </div>
               </div>
             </CardContent>
@@ -429,7 +459,9 @@ export default function TerminalSimPage() {
           <Card>
             <CardHeader>
               <CardTitle>Learning Objectives</CardTitle>
-              <CardDescription>What you'll learn from this simulation</CardDescription>
+              <CardDescription>
+                What you'll learn from this simulation
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm">
@@ -463,5 +495,5 @@ export default function TerminalSimPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

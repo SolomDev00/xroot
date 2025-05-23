@@ -172,9 +172,11 @@ export default function Home() {
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Button>
                   </Link>
-                  <Button variant="outline" size="lg">
-                    Watch Demo
-                  </Button>
+                  <Link href={"/cryptography"}>
+                    <Button variant="outline" size="lg">
+                      Watch Demo
+                    </Button>
+                  </Link>
                 </motion.div>
 
                 <motion.div
@@ -353,7 +355,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="container py-16 md:py-24">
+        <section className="container py-16 md:py-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -416,7 +418,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t py-8 md:py-12">
+      <footer className="border-t pt-8 md:pt-12 md:pb-6">
         <div className="container">
           <div className="flex flex-col md:flex-row justify-between gap-8">
             <div className="space-y-4 md:max-w-xs">
@@ -539,7 +541,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-8 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="mt-6 pt-6 border-t flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
               © 2025 xRoot. All rights reserved.
             </p>
